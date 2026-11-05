@@ -1,12 +1,13 @@
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
 
 public class Game {
 	public static Room currentRoom = World.buildWorld();
-	private static ArrayList<Item> items = new ArrayList<>();
+	public static ArrayList<Item> items = new ArrayList<>();
 	public static HashMap<String, String> roomDescriptions = new HashMap<>();
 	
 	public static void scanFile() {
@@ -46,6 +47,7 @@ public class Game {
 		
 		while (!commands.equals("exit")) {
 			commandArray = commands.split(" ");
+			Item potentialItem;
 			switch (commandArray[0]) {
 			case "go":
 				if (commandArray.length > 1) {
@@ -73,12 +75,42 @@ public class Game {
 				break;
 			case "use": 
 				for (Item item : Game.items) {
-					if (item.getName().equals(commandArray[1])) {
+					if (item.getName().toLowerCase().equals(commandArray[1])) {
 						item.use();
-						return;
+						break;
 					}
 				}
 				Game.print("Error: You dont have a "+commandArray[1]);
+				break;
+			case "open":
+				potentialItem = Game.currentRoom.getItem(commandArray[1]);
+				if (potentialItem != null) {
+					potentialItem.open();
+				} else {
+					Game.print("Error: There is no "+commandArray[1]+ " in the room!");
+				}
+				break;
+			case "close":
+				potentialItem = Game.currentRoom.getItem(commandArray[1]);
+				if (potentialItem != null) {
+					potentialItem.close();
+				} else {
+					Game.print("Error: There is no "+commandArray[1]+ " in the room!");
+				}
+				break;
+			case "read":
+				boolean found = false;
+				Iterator<Item> it = Game.items.iterator();
+				while (it.hasNext()) {
+					Item item = it.next();
+					if (item.getName().toLowerCase().equals(commandArray[1])) {
+						item.read();
+						found = true;
+						break;
+					}
+				}
+				if (!found) Game.print("Error: You dont have a "+commandArray[1]);
+				break;
 			default:
 				Game.print("Error: not a valid command.");
 			}

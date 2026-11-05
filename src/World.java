@@ -26,11 +26,14 @@ public class World {
 		bedroom.addExit(attic, 4);
 		
 		office.setLocked(true);
-		attic.setLocked(true);
+		attic.setLocked(false);
 		garage.setLocked(true);
 		
 		Key officeKey = new Key("Office Key", "Office");
 		livingRoom.addItem(officeKey);
+		
+		Safe safe = new Safe("Safe");
+		attic.addItem(safe);
 		
 		return livingRoom;
 	}
